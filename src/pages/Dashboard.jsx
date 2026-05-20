@@ -59,7 +59,7 @@ export default function Dashboard() {
   async function fetchData() {
     setLoading(true)
     const [{ data: emp }, { data: aus }] = await Promise.all([
-      supabase.from('ausencias_empleados').select('*').order('nombre'),
+      supabase.from('ausencias_empleados').select('*').eq('activo', true).order('nombre'),
       isAdmin
         ? supabase.from('ausencias').select('*').order('inicio', { ascending: false })
         : supabase.from('ausencias').select('*').eq('emp_id', empId).order('inicio', { ascending: false })
