@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../App'
 import AusenciaModal from '../components/AusenciaModal'
+import SolicitudModal from '../components/SolicitudModal'
 import CalendarioView from '../components/CalendarioView'
 import EmpleadosView from '../components/EmpleadosView'
 import PendientesView from '../components/PendientesView'
@@ -42,6 +43,8 @@ export default function Dashboard() {
   const [dashYear, setDashYear] = useState(new Date().getFullYear())
 
   // Filters
+  const [solicitudOpen, setSolicitudOpen] = useState(false)
+
   const [fEmp, setFEmp] = useState('')
   const [fDept, setFDept] = useState('')
   const [fTipo, setFTipo] = useState('')
@@ -172,6 +175,7 @@ export default function Dashboard() {
         <div className="header-actions">
           {isAdmin && <button className="btn btn-secondary btn-sm" onClick={exportCSV}>⬇ Exportar CSV</button>}
           {isAdmin && <button className="btn btn-primary" onClick={() => { setEditingAusencia(null); setModalOpen(true) }}>+ Nueva ausencia</button>}
+          {!isAdmin && <button className="btn btn-primary" onClick={() => setSolicitudOpen(true)}>+ Solicitar ausencia</button>}
           <button className="btn btn-secondary btn-sm" onClick={handleLogout}>Salir</button>
         </div>
       </header>
@@ -460,6 +464,16 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* SOLICITUD MODAL */}
+      {solicitudOpen && (
+        <SolicitudModal
+          empleados={empleados}
+          ausencias={ausencias}
+          onClose={() => setSolicitudOpen(false)}
+          onSaved={() => { setSolicitudOpen(false); showToast('Solicitud enviada correctamente'); fetchData() }}
+        />
       )}
 
       {/* TOAST */}
